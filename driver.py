@@ -41,14 +41,19 @@ def getBlockDistribution(database):
     for key, value in ipcounts.iteritems():
         return (key, value)
 
+tempset = set()
 for db in run_command(databasescommand):
-
-    temparr = re.findall('(\/user\/hive\/warehouse\/.*)$', db)
+    temparr = re.findall('(\/user\/hive\/warehouse\/.*\.db)', db)
     if (temparr):
-        for dbitem in temparr:
-            tple = getBlockDistribution(dbitem)
-            outputs.append((date, temparr, tple[0], tple[1]))
+        for i in temparr:
+            tempset.add(i)
+
+for dbitem in tempset:
+    tple = getBlockDistribution(dbitem)
+    outputs.append((date, dbitem, tple[1], tple[1]))
 
 csvwriter = csv.writer(open('blockdistibution.csv', 'wb'), delimiter=',')
 for output in outputs:
     csvwriter.writerow(output)
+
+
